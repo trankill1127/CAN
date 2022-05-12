@@ -23,6 +23,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText edit_name;
     private ImageButton signup_button;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +44,27 @@ public class SignupActivity extends AppCompatActivity {
                 String userPassword = edit_pw.getText().toString();
                 String userName = edit_name.getText().toString();
 
+                //22-05-13 추가
+                int step_count = 0;
+                int trash_count = 0;
+                int total = 0;
+                int best_rank = 999;
+                //
+
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
                         try {
+
+                            //22-05-13
+                            //에러
+                            //org.json.JSONException: Value <br of type java.lang.String cannot be converted to JSONObject
+                            //JSONObject jsonObject = new JSONObject(response);
+                            //org.json.JSONException: Value <br of type java.lang.String cannot be converted to JSONArray
+                            //JSONArray jsonArray = new JSONArray(response);
+                            //해결
+                            //Register.php 오타 수정
 
                             JSONObject jsonObject = new JSONObject(response);
 
@@ -58,12 +75,11 @@ public class SignupActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"회원 가입에 성공했습니다.",Toast.LENGTH_SHORT).show(); //회원 가입성공 알림림
 
                                 //로그인 페이지로 이동
-                                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                                Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
                                 startActivity(intent);
 
                             } else { // 회원등록에 실패한 경우
                                 Toast.makeText(getApplicationContext(),"회원 등록에 실패했습니다.",Toast.LENGTH_SHORT).show(); //회원가입 실패 알림
-                                return;
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -72,8 +88,8 @@ public class SignupActivity extends AppCompatActivity {
                     }
                 };
 
-                SignUpRequest signUpRequest = new SignUpRequest(userID,userPassword,userName,responseListener);
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                SignUpRequest signUpRequest = new SignUpRequest(userID,userPassword,userName,step_count,trash_count,total,best_rank, responseListener);
+                RequestQueue queue = Volley.newRequestQueue(SignupActivity.this);
                 queue.add(signUpRequest);
 
             }

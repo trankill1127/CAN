@@ -13,13 +13,17 @@ public class SignUpRequest extends StringRequest {
     final static private String URL = "http://seyeonbb.dothome.co.kr/Register.php";
     private Map<String, String> parameters;
 
-    public SignUpRequest(String userID, String userPassword, String userName, Response.Listener<String> listener) {
+    public SignUpRequest(String userID, String userPassword, String userName, int step_count, int trash_count, int total, int best_rank, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);
 
         parameters = new HashMap<>();
         parameters.put("userID", userID);
         parameters.put("userPassword", userPassword);
         parameters.put("userName", userName);
+        parameters.put("step_count", step_count+"");
+        parameters.put("trash_count", trash_count+"");
+        parameters.put("total", total+"");
+        parameters.put("best_rank", best_rank+"");
     }
 
     @Override
