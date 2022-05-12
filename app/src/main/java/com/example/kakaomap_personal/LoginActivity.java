@@ -59,8 +59,17 @@ public class LoginActivity extends AppCompatActivity {
                             boolean success = jsonObject.getBoolean("success");//해당하는 키의 value 반환 (*)
 
                             if (success) { // 로그인에 성공한 경우
-                                String userID = jsonObject.getString("userID"); //해당하는 키의 value 반환
-                                String userPassword = jsonObject.getString("userPassword"); //해당하는 키의 value 반환
+                                //해당하는 키의 value 반환
+                                String userID = jsonObject.getString("userID");
+                                String userPassword = jsonObject.getString("userPassword");
+                                String userName = jsonObject.getString("userPassword");
+
+                                //22-05-13 추가
+                                int step_count = Integer.parseInt(jsonObject.getString("step_count"));
+                                int trash_count = Integer.parseInt(jsonObject.getString("trash_count"));
+                                int total = Integer.parseInt(jsonObject.getString("total"));
+                                int best_rank = Integer.parseInt(jsonObject.getString("best_rank"));
+                                //
 
                                 //application context가 필요한 경우 getApplicationContext()
                                 //activity context가 필요한 경우 this
@@ -69,10 +78,14 @@ public class LoginActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 
-                                intent.putExtra("userID", userID); //다른 액티비티로 값을 전달
-                                intent.putExtra("userPassword", userPassword); //다른 액티비티로 값을 전달
-
-                                startActivity(intent); //다른 액티비티로 이동
+                                //mainActivity로 회원 정보 전달
+                                intent.putExtra("userID", userID);
+                                intent.putExtra("userPassword", userPassword);
+                                intent.putExtra("userName", userName);
+                                intent.putExtra("step_count", step_count);
+                                intent.putExtra("trash_count", trash_count);
+                                intent.putExtra("total", total);
+                                intent.putExtra("best_rank", best_rank);
 
                                 //송신
                                 //Intent putExtra (String name, int value)
@@ -82,6 +95,12 @@ public class LoginActivity extends AppCompatActivity {
                                 //int getIntExtra (String name, int defaultValue)
                                 //String getStringExtra(String name)
                                 //boolean getBooleanExtra (String name, boolean defaultValue)
+
+                                //회원 정보 잘 가져왔나 확인
+                                //Toast.makeText(getApplicationContext(),userID+" "+total ,Toast.LENGTH_SHORT).show();
+
+                                startActivity(intent); //다른 액티비티로 이동
+
 
 
 
