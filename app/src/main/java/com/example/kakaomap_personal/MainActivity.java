@@ -11,9 +11,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity
         implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener {
@@ -50,21 +57,52 @@ public class MainActivity extends AppCompatActivity
         arrive_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                intent = new Intent(MainActivity.this,RankingActivity.class);
 
-                intent.putExtra("userID", userID);
-                intent.putExtra("userPassword", userPassword);
-                intent.putExtra("userName", userName);
-                intent.putExtra("step_count", step_count);
-                intent.putExtra("trash_count", trash_count);
-                intent.putExtra("total", total);
-                intent.putExtra("best_rank", best_rank);
+                now_step_count=700; //임의로 걸음수 설정
 
-                //걸음수 전달
-                now_step_count=700;
-                intent.putExtra("now_step_count", now_step_count);
+                //데베 업뎃을 위해 회원정보 업뎃
+                step_count=step_count+now_step_count;
+                trash_count=trash_count+1;
+                total=step_count+trash_count*1000;
 
-                startActivity(intent);
+                //데베 업뎃
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+
+                            boolean success = jsonObject.getBoolean("success");
+
+                            if (success) { // 데베 업뎃을 성공한 경우
+                                intent = new Intent(MainActivity.this,RankingActivity.class);
+
+                                //RankingActivity에 회원정보 전달
+                                intent.putExtra("userID", userID);
+                                intent.putExtra("userPassword", userPassword);
+                                intent.putExtra("userName", userName);
+                                intent.putExtra("step_count", step_count);
+                                intent.putExtra("trash_count", trash_count);
+                                intent.putExtra("total", total);
+                                intent.putExtra("best_rank", best_rank);
+                                intent.putExtra("now_step_count", now_step_count);
+
+                                startActivity(intent);
+
+                            } else { // 데베 업뎃에 실패한 경우
+                                Toast.makeText(getApplicationContext(),"데이터베이스 업데이트에 실패했습니다.",Toast.LENGTH_SHORT).show(); //데베 업뎃 실패 알림
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+                UpdateRequest updateRequest = new UpdateRequest(userID,step_count,trash_count,total,responseListener);
+                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                queue.add(updateRequest);
+
             }
         });
     }
@@ -99,7 +137,6 @@ public class MainActivity extends AppCompatActivity
         //회원 정보 적용
         layout_userName = findViewById(R.id.main_userName);
         layout_userName.setText(userName);
-
     }
 
     @Override
