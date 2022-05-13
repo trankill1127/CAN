@@ -23,31 +23,41 @@ public class MainActivity extends AppCompatActivity
     private ViewGroup mMapViewContainer;
 
     //value
-
     //MapPoint currentMapPoint;
     //MapPOIItem userMarker = new MapPOIItem();
+    private Intent intent;
 
     private TextView layout_userName;
 
+    private String userID;
+    private String userPassword;
+    private String userName;
+    private int step_count;
+    private int trash_count;
+    private int total;
+    private int best_rank;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
-
-
-
-        initView();
+        initView(); //화면 초기화
 
         ImageButton arrive_button = findViewById(R.id.main_arriveButton);
         arrive_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,RankingActivity.class);
+                intent = new Intent(MainActivity.this,RankingActivity.class);
+
+                intent.putExtra("userID", userID);
+                intent.putExtra("userPassword", userPassword);
+                intent.putExtra("userName", userName);
+                intent.putExtra("step_count", step_count);
+                intent.putExtra("trash_count", trash_count);
+                intent.putExtra("total", total);
+                intent.putExtra("best_rank", best_rank);
+
                 startActivity(intent);
             }
         });
@@ -55,10 +65,7 @@ public class MainActivity extends AppCompatActivity
 
     private void initView() {
 
-
-
-
-        //binding
+        //맵 바인딩
         mMapView = new MapView(this);
         mMapViewContainer = findViewById(R.id.map_view);
         mMapViewContainer.addView(mMapView);
@@ -69,29 +76,23 @@ public class MainActivity extends AppCompatActivity
 
         //맵 리스너 (현재위치 업데이트)
         mMapView.setCurrentLocationEventListener(this);
-        //setCurrentLocationTrackingMode (지도랑 현재위치 좌표 찍어주고 따라다닌다.)
-        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
-
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading); //현재위치 추적
 
         //userMarker.setItemName("현재위치");//마커 이름 설정
 
-
-        layout_userName = findViewById(R.id.main_userName);
-
         //LoginActivity에서 전달한 정보들 받아오기
-        Intent intent = getIntent();
-        String userID = intent.getStringExtra("userID");
-        String userPassword = intent.getStringExtra("userPassword");
-        String userName = intent.getStringExtra("userName");
-        int step_count = intent.getIntExtra("step_count", 0);
-        int trash_count = intent.getIntExtra("trash_count", 0);
-        int total = intent.getIntExtra("total", 0);
-        int best_rank = intent.getIntExtra("best_rank", 0);
+        intent = getIntent();
+        userID = intent.getStringExtra("userID");
+        userPassword = intent.getStringExtra("userPassword");
+        userName = intent.getStringExtra("userName");
+        step_count = intent.getIntExtra("step_count", 0);
+        trash_count = intent.getIntExtra("trash_count", 0);
+        total = intent.getIntExtra("total", 0);
+        best_rank = intent.getIntExtra("best_rank", 0);
 
         //회원 정보 적용
+        layout_userName = findViewById(R.id.main_userName);
         layout_userName.setText(userName);
-
-
 
     }
 
