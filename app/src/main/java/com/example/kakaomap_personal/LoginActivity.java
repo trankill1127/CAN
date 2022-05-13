@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                                 //해당하는 키의 value 반환
                                 String userID = jsonObject.getString("userID");
                                 String userPassword = jsonObject.getString("userPassword");
-                                String userName = jsonObject.getString("userPassword");
+                                String userName = jsonObject.getString("userName"); //오타 수정
 
                                 //22-05-13 추가
                                 int step_count = Integer.parseInt(jsonObject.getString("step_count"));

@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
@@ -16,19 +18,28 @@ import net.daum.mf.map.api.MapView;
 public class MainActivity extends AppCompatActivity
         implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener {
 
-
     //xml
-    MapView mMapView;
-    ViewGroup mMapViewContainer;
+    private MapView mMapView;
+    private ViewGroup mMapViewContainer;
 
     //value
-    MapPoint currentMapPoint;
-    MapPOIItem userMarker = new MapPOIItem();
+
+    //MapPoint currentMapPoint;
+    //MapPOIItem userMarker = new MapPOIItem();
+
+    private TextView layout_userName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+
+
+
 
         initView();
 
@@ -36,7 +47,7 @@ public class MainActivity extends AppCompatActivity
         arrive_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),RankingActivity.class);
+                Intent intent = new Intent(MainActivity.this,RankingActivity.class);
                 startActivity(intent);
             }
         });
@@ -44,11 +55,13 @@ public class MainActivity extends AppCompatActivity
 
     private void initView() {
 
+
+
+
         //binding
         mMapView = new MapView(this);
         mMapViewContainer = findViewById(R.id.map_view);
         mMapViewContainer.addView(mMapView);
-
 
         //맵 리스너
         mMapView.setMapViewEventListener(this); // this에 MapView.MapViewEventListener 구현.
@@ -61,6 +74,24 @@ public class MainActivity extends AppCompatActivity
 
 
         //userMarker.setItemName("현재위치");//마커 이름 설정
+
+
+        layout_userName = findViewById(R.id.main_userName);
+
+        //LoginActivity에서 전달한 정보들 받아오기
+        Intent intent = getIntent();
+        String userID = intent.getStringExtra("userID");
+        String userPassword = intent.getStringExtra("userPassword");
+        String userName = intent.getStringExtra("userName");
+        int step_count = intent.getIntExtra("step_count", 0);
+        int trash_count = intent.getIntExtra("trash_count", 0);
+        int total = intent.getIntExtra("total", 0);
+        int best_rank = intent.getIntExtra("best_rank", 0);
+
+        //회원 정보 적용
+        layout_userName.setText(userName);
+
+
 
     }
 
