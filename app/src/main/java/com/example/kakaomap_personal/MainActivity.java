@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     private int total;
     private int best_rank;
 
+    private int now_step_count;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,10 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra("trash_count", trash_count);
                 intent.putExtra("total", total);
                 intent.putExtra("best_rank", best_rank);
+
+                //걸음수 전달
+                now_step_count=700;
+                intent.putExtra("now_step_count", now_step_count);
 
                 startActivity(intent);
             }
