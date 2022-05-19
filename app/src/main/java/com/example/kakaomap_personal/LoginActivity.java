@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                 //HTTP 통신의 구현을 목적으로 개발된 volley API의 핵심 클래스 중 하나인
 
                 //네트워크 리스너
-               Response.Listener<String> responseListener = new Response.Listener<String>() {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 

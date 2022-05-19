@@ -1,16 +1,26 @@
 package com.example.kakaomap_personal;
 
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
@@ -22,6 +32,8 @@ import net.daum.mf.map.api.MapView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener {
 
@@ -30,11 +42,20 @@ public class MainActivity extends AppCompatActivity
     private ViewGroup mMapViewContainer;
 
     //value
-    //MapPoint currentMapPoint;
-    //MapPOIItem userMarker = new MapPOIItem();
-    private Intent intent;
+    MapPoint startMapPoint;
+    MapPoint canMapPoint;
 
+    Double startLatitude; //앱 실행 시 사용자 위도
+    Double startLongitude; //앱 실행 시 사용자 경도
+    Double latitude; //가장 가까운 쓰레기통 위도
+    Double longitude; //가장 가까운 쓰레기통 경도
+
+    MapPOIItem canMarker = new MapPOIItem();
+    MapPOIItem startMarker = new MapPOIItem();
+
+    private Intent intent;
     private TextView layout_userName;
+    private int now_step_count;
 
     private String userID;
     private String userPassword;
@@ -44,21 +65,32 @@ public class MainActivity extends AppCompatActivity
     private int total;
     private int best_rank;
 
-    private int now_step_count;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         initView(); //화면 초기화
+
+
+
+        startLatitude = 37.5666805;
+        startLongitude = 126.9784147;
+
+
+
 
         ImageButton arrive_button = findViewById(R.id.main_arriveButton);
         arrive_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                now_step_count=700; //임의로 걸음수 설정
+                now_step_count=10; //임의로 걸음수 설정
 
                 //데베 업뎃을 위해 회원정보 업뎃
                 step_count=step_count+now_step_count;
@@ -105,6 +137,7 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
     }
 
     private void initView() {
@@ -122,8 +155,6 @@ public class MainActivity extends AppCompatActivity
         mMapView.setCurrentLocationEventListener(this);
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading); //현재위치 추적
 
-        //userMarker.setItemName("현재위치");//마커 이름 설정
-
         //LoginActivity에서 전달한 정보들 받아오기
         intent = getIntent();
         userID = intent.getStringExtra("userID");
@@ -137,14 +168,48 @@ public class MainActivity extends AppCompatActivity
         //회원 정보 적용
         layout_userName = findViewById(R.id.main_userName);
         layout_userName.setText(userName);
+
+
+        Response.Listener<String> c_responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    Toast.makeText(getApplicationContext(),"가장 가까운 쓰레기통의 위치를 찾는 데 성공했습니다.",Toast.LENGTH_SHORT).show();
+
+                    latitude=Double.parseDouble(jsonObject.getString("latitude"));
+                    longitude=Double.parseDouble(jsonObject.getString("longitude"));
+
+                    canMapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
+                    canMarker.setItemName("쓰레기통 위치");
+                    canMarker.setMapPoint(canMapPoint);//마커 위치 설정
+                    canMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); //마커 모습(기본)
+                    canMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); //마커 모습(클릭)
+
+                    mMapView.addPOIItem(canMarker); //지도 위에 마커 표시
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        };
+        TrashCanRequest trashCanRequest = new TrashCanRequest(startLatitude, startLongitude, c_responseListener);
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(trashCanRequest);
+
     }
 
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
         //MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
-        //currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
-        //이 좌표로 지도 중심 이동
+        //startMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+        //startLatitude = mapPointGeo.latitude;
+        //startLongitude = mapPointGeo.longitude;
 
+        //사용자 현재 위치 좌표로 지도 중심 이동
         //mMapView.setMapCenterPoint(currentMapPoint, true);
         //mMapView.setZoomLevel(1, true);//맵 배율 설정
 
@@ -153,6 +218,7 @@ public class MainActivity extends AppCompatActivity
         //userMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); //마커 모습(클릭)
 
         //mapView.addPOIItem(userMarker); //지도 위에 마커 표시
+
 
 
     }
