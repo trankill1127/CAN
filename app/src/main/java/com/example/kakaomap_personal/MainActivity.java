@@ -31,6 +31,7 @@ import net.daum.mf.map.api.MapView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 
@@ -42,11 +43,13 @@ public class MainActivity extends AppCompatActivity
     private ViewGroup mMapViewContainer;
 
     //value
-    MapPoint startMapPoint;
+    MapPoint currentMapPoint;
     MapPoint canMapPoint;
 
     Double startLatitude; //앱 실행 시 사용자 위도
     Double startLongitude; //앱 실행 시 사용자 경도
+    Double currentLatitude; //사용자 현재 위치 위도
+    Double currentLongitude; //사용자 현재 위치 경도
     Double latitude; //가장 가까운 쓰레기통 위도
     Double longitude; //가장 가까운 쓰레기통 경도
 
@@ -65,7 +68,9 @@ public class MainActivity extends AppCompatActivity
     private int total;
     private int best_rank;
 
+    private boolean startingApp = true;
 
+    Response.Listener<String> c_responseListener;
 
 
     @Override
@@ -73,17 +78,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         initView(); //화면 초기화
-
-
-
-        startLatitude = 37.5666805;
-        startLongitude = 126.9784147;
-
-
-
 
         ImageButton arrive_button = findViewById(R.id.main_arriveButton);
         arrive_button.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +125,6 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 };
-
                 UpdateRequest updateRequest = new UpdateRequest(userID,step_count,trash_count,total,responseListener);
                 RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
                 queue.add(updateRequest);
@@ -170,11 +164,28 @@ public class MainActivity extends AppCompatActivity
         layout_userName.setText(userName);
 
 
-        Response.Listener<String> c_responseListener = new Response.Listener<String>() {
+        c_responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
+                //에러 코드
+                    //org.json.JSONException: Value 37.551609 of type java.lang.Double cannot be converted to JSONObject
+                    //php에서 쓰레기통 좌표를 받아올 때 string으로 전달을 함에도 불구하고 Double로 가져오는 문제(...?)
+
+                //Log.i("-------------","response-------------"+response);
+                //Toast.makeText(getApplicationContext(),"가장 가까운 쓰레기통의 위치를 찾는 데 성공했습니다.",Toast.LENGTH_SHORT).show();
+                //latitude = 37.548887;
+                    //longitude = 127.075653;
+                    //canMapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
+                    //canMarker.setItemName("어린이대공원 위치");
+                    //canMarker.setMapPoint(canMapPoint);//마커 위치 설정
+                    //canMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); //마커 모습(기본)
+                    //canMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); //마커 모습(클릭)
+                    //mMapView.addPOIItem(canMarker); //지도 위에 마커 표시
+
                 try {
+                    Log.i("-------------","response-------------"+response);
+
                     JSONObject jsonObject = new JSONObject(response);
 
                     Toast.makeText(getApplicationContext(),"가장 가까운 쓰레기통의 위치를 찾는 데 성공했습니다.",Toast.LENGTH_SHORT).show();
@@ -187,7 +198,6 @@ public class MainActivity extends AppCompatActivity
                     canMarker.setMapPoint(canMapPoint);//마커 위치 설정
                     canMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); //마커 모습(기본)
                     canMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); //마커 모습(클릭)
-
                     mMapView.addPOIItem(canMarker); //지도 위에 마커 표시
 
                 } catch (JSONException e) {
@@ -196,30 +206,31 @@ public class MainActivity extends AppCompatActivity
             }
 
         };
-        TrashCanRequest trashCanRequest = new TrashCanRequest(startLatitude, startLongitude, c_responseListener);
-        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        queue.add(trashCanRequest);
-
     }
 
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
-        //MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
-        //startMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
-        //startLatitude = mapPointGeo.latitude;
-        //startLongitude = mapPointGeo.longitude;
 
-        //사용자 현재 위치 좌표로 지도 중심 이동
-        //mMapView.setMapCenterPoint(currentMapPoint, true);
-        //mMapView.setZoomLevel(1, true);//맵 배율 설정
+        MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
+        currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+        currentLatitude = mapPointGeo.latitude;
+        currentLongitude = mapPointGeo.longitude;
 
-        //userMarker.setMapPoint(currentMapPoint);//마커 위치 설정
-        //userMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); //마커 모습(기본)
-        //userMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); //마커 모습(클릭)
+        Log.i("--------------------", "current "+currentLatitude+" "+currentLongitude);
 
-        //mapView.addPOIItem(userMarker); //지도 위에 마커 표시
+        if (startingApp){
+            startLatitude = currentLatitude;
+            startLongitude = currentLongitude;
+            startingApp=false;
 
+            Log.i("--------------------", "start  "+startLatitude+" "+startLongitude);
+            Log.i("----------------", "request "+startLatitude+" "+startLongitude);
 
+            TrashCanRequest trashCanRequest = new TrashCanRequest(startLatitude, startLongitude, c_responseListener);
+            RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+            queue.add(trashCanRequest);
+
+        }
 
     }
 

@@ -13,12 +13,12 @@ public class TrashCanRequest extends StringRequest {
     final static private String URL = "http://seyeonbb.dothome.co.kr/getCan.php";
     private Map<String, String> parameters;
 
-    public TrashCanRequest(Double startLatitude, Double startLongtitude, Response.Listener<String> listener) {
+    public TrashCanRequest(Double startLatitude, Double startLongitude, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);
 
         parameters = new HashMap<>();
         parameters.put("startLatitude", startLatitude+""); //key=value의 형태로 hashmap에 추가
-        parameters.put("startLongtitude", startLongtitude+"");
+        parameters.put("startLongitude", startLongitude+"");
     }
 
     @Override
