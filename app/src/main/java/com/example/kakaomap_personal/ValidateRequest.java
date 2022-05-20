@@ -17,7 +17,7 @@ public class ValidateRequest extends StringRequest {
         super(Method.POST, URL, listener,null);
 
         map = new HashMap<>();
-        map.put("UserID", UserID);
+        map.put("userID", userID);
     }
 
     @Override
