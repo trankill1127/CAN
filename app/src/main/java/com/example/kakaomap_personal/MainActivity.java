@@ -6,6 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -36,7 +40,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener {
+        implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener/*, SensorEventListener*/ {
 
     //xml
     private MapView mMapView;
@@ -68,72 +72,92 @@ public class MainActivity extends AppCompatActivity
     private int total;
     private int best_rank;
 
+    private int flag=0;
+    private TextView location;
+    public double distance=10.0;
+
+    public ImageButton arrive_button; //05-21 sy onCurrentLocationUpdate에서도 사용하기 위해 전역변수 선언
+    public ImageButton arrive_button2;//05-21 sy 위와 동일
     private boolean startingApp = true;
 
     Response.Listener<String> c_responseListener;
 
+    /*
+    SensorManager sensorManager;
+    Sensor stepCountSensor;
+    TextView stepCountView;
 
+    int currentSteps = 0;
+     @RequiresApi(api = Build.VERSION_CODES.Q)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        arrive_button = findViewById(R.id.main_arriveButton);
+        arrive_button2 = findViewById(R.id.main_arriveButton2);
         initView(); //화면 초기화
+        //stepCountView = findViewById(R.id.stepCountView);
+        /*
+                if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
 
-        ImageButton arrive_button = findViewById(R.id.main_arriveButton);
-        arrive_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
+        }
 
-                now_step_count=10; //임의로 걸음수 설정
+        // 걸음 센서 연결
+        // * 옵션
+        // - TYPE_STEP_DETECTOR:  리턴 값이 무조건 1, 앱이 종료되면 다시 0부터 시작
+        // - TYPE_STEP_COUNTER : 앱 종료와 관계없이 계속 기존의 값을 가지고 있다가 1씩 증가한 값을 리턴
+        //
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
-                //데베 업뎃을 위해 회원정보 업뎃
-                step_count=step_count+now_step_count;
-                trash_count=trash_count+1;
-                total=step_count+trash_count*1000;
+        // 디바이스에 걸음 센서의 존재 여부 체크
+        if (stepCountSensor == null) {
+            Toast.makeText(this, "No Step Sensor", Toast.LENGTH_SHORT).show();
+        }
 
-                //데베 업뎃
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
+         */
 
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
+    }
+    /*
+    public void onStart() {
+        super.onStart();
+        if(stepCountSensor !=null) {
+            // 센서 속도 설정
+            // * 옵션
+            // - SENSOR_DELAY_NORMAL: 20,000 초 딜레이
+            // - SENSOR_DELAY_UI: 6,000 초 딜레이
+            // - SENSOR_DELAY_GAME: 20,000 초 딜레이
+            // - SENSOR_DELAY_FASTEST: 딜레이 없음
+            //
+            sensorManager.registerListener(this,stepCountSensor,SensorManager.SENSOR_DELAY_FASTEST);
+        }
+    }
+     */
+    /*
+        @Override
+    public void onSensorChanged(SensorEvent event) {
+        // 걸음 센서 이벤트 발생시
+        if(event.sensor.getType() == Sensor.TYPE_STEP_COUNTER){
 
-                            boolean success = jsonObject.getBoolean("success");
-
-                            if (success) { // 데베 업뎃을 성공한 경우
-                                intent = new Intent(MainActivity.this,RankingActivity.class);
-
-                                //RankingActivity에 회원정보 전달
-                                intent.putExtra("userID", userID);
-                                intent.putExtra("userPassword", userPassword);
-                                intent.putExtra("userName", userName);
-                                intent.putExtra("step_count", step_count);
-                                intent.putExtra("trash_count", trash_count);
-                                intent.putExtra("total", total);
-                                intent.putExtra("best_rank", best_rank);
-                                intent.putExtra("now_step_count", now_step_count);
-
-                                startActivity(intent);
-
-                            } else { // 데베 업뎃에 실패한 경우
-                                Toast.makeText(getApplicationContext(),"데이터베이스 업데이트에 실패했습니다.",Toast.LENGTH_SHORT).show(); //데베 업뎃 실패 알림
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-                UpdateRequest updateRequest = new UpdateRequest(userID,step_count,trash_count,total,responseListener);
-                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                queue.add(updateRequest);
-
+            if(event.values[0]==1.0f){
+                // 센서 이벤트가 발생할때 마다 걸음수 증가
+                currentSteps++;
+                stepCountView.setText(String.valueOf(currentSteps));
             }
-        });
+
+        }
 
     }
 
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+     */
     private void initView() {
 
         //맵 바인딩
@@ -168,21 +192,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(String response) {
 
-                //에러 코드
-                    //org.json.JSONException: Value 37.551609 of type java.lang.Double cannot be converted to JSONObject
-                    //php에서 쓰레기통 좌표를 받아올 때 string으로 전달을 함에도 불구하고 Double로 가져오는 문제(...?)
-
-                //Log.i("-------------","response-------------"+response);
-                //Toast.makeText(getApplicationContext(),"가장 가까운 쓰레기통의 위치를 찾는 데 성공했습니다.",Toast.LENGTH_SHORT).show();
-                //latitude = 37.548887;
-                    //longitude = 127.075653;
-                    //canMapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
-                    //canMarker.setItemName("어린이대공원 위치");
-                    //canMarker.setMapPoint(canMapPoint);//마커 위치 설정
-                    //canMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); //마커 모습(기본)
-                    //canMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); //마커 모습(클릭)
-                    //mMapView.addPOIItem(canMarker); //지도 위에 마커 표시
-
                 try {
                     Log.i("-------------","response-------------"+response);
 
@@ -200,9 +209,14 @@ public class MainActivity extends AppCompatActivity
                     canMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); //마커 모습(클릭)
                     mMapView.addPOIItem(canMarker); //지도 위에 마커 표시
 
+                    flag=1;
+                    //distance=Math.sqrt((latitude-currentLatitude)*(latitude-currentLatitude)+(longitude-currentLongitude)*(longitude-currentLongitude));
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+               // flag=1; //05-21 sy 가장 가까운 쓰레기통을 찾은 뒤 거리 계산을 해야하므로 flag설정(0에서 1로 변경)
             }
 
         };
@@ -210,15 +224,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
-
+        location=findViewById(R.id.main_meterLeft);
+        //location.setText("hi");
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
         currentLatitude = mapPointGeo.latitude;
         currentLongitude = mapPointGeo.longitude;
 
+
+
         Log.i("--------------------", "current "+currentLatitude+" "+currentLongitude);
 
-        if (startingApp){
+        if (startingApp==true){
             startLatitude = currentLatitude;
             startLongitude = currentLongitude;
             startingApp=false;
@@ -229,9 +246,67 @@ public class MainActivity extends AppCompatActivity
             TrashCanRequest trashCanRequest = new TrashCanRequest(startLatitude, startLongitude, c_responseListener);
             RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
             queue.add(trashCanRequest);
-
         }
 
+        if(flag==1){//가장 가까운 쓰레기통 찾았을 때
+        distance=Math.sqrt((latitude-currentLatitude)*(latitude-currentLatitude)+(longitude-currentLongitude)*(longitude-currentLongitude));
+        Log.i("--distance---------", distance+"");
+        location.setText(String.format("%f %f \n %f %f \n%f %d", latitude,longitude,currentLatitude,currentLongitude,distance,flag));
+       // distance=0.0004;
+        if(distance<0.0005) {
+            arrive_button.setVisibility(View.INVISIBLE);
+            arrive_button2.setVisibility(View.VISIBLE);
+            arrive_button2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    now_step_count = 10; //임의로 걸음수 설정
+
+                    //데베 업뎃을 위해 회원정보 업뎃
+                    step_count = step_count + now_step_count;
+                    trash_count = trash_count + 1;
+                    total = step_count + trash_count * 1000;
+
+                    //데베 업뎃
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+
+                                boolean success = jsonObject.getBoolean("success");
+
+                                if (success) { // 데베 업뎃을 성공한 경우
+                                    intent = new Intent(MainActivity.this, RankingActivity.class);
+
+                                    //RankingActivity에 회원정보 전달
+                                    intent.putExtra("userID", userID);
+                                    intent.putExtra("userPassword", userPassword);
+                                    intent.putExtra("userName", userName);
+                                    intent.putExtra("step_count", step_count);
+                                    intent.putExtra("trash_count", trash_count);
+                                    intent.putExtra("total", total);
+                                    intent.putExtra("best_rank", best_rank);
+                                    intent.putExtra("now_step_count", now_step_count);
+
+                                    startActivity(intent);
+
+                                } else { // 데베 업뎃에 실패한 경우
+                                    Toast.makeText(getApplicationContext(), "데이터베이스 업데이트에 실패했습니다.", Toast.LENGTH_SHORT).show(); //데베 업뎃 실패 알림
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    UpdateRequest updateRequest = new UpdateRequest(userID, step_count, trash_count, total, responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                    queue.add(updateRequest);
+
+                }
+            });
+        }}
     }
 
     @Override
@@ -313,4 +388,16 @@ public class MainActivity extends AppCompatActivity
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
 
     }
+/*
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+ */
 }
