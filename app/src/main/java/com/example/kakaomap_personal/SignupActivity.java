@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -22,7 +24,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText edit_pw;
     private EditText edit_name;
     private ImageButton signup_button;
-
+    private Button duplicate_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +36,44 @@ public class SignupActivity extends AppCompatActivity {
         edit_pw = findViewById(R.id.signUp_pw_Edit);
         edit_name = findViewById(R.id.signUp_name_Edit);
         signup_button = findViewById(R.id.signUp_signinButton);
+        duplicate_button = findViewById(R.id.duplicate_check_button);
 
+        duplicate_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userPassword = edit_pw.getText().toString();
+                String userName = edit_name.getText().toString();
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+
+
+                            JSONObject jsonObject = new JSONObject(response);
+
+                            boolean duplicate = jsonObject.getBoolean("duplicate");
+
+                            if (duplicate) { // 중복 ID가 존재하는 경우
+                                Toast.makeText(getApplicationContext(),"사용할 수 없는 아이디 입니다.",Toast.LENGTH_SHORT).show(); //회원 가입성공 알림림
+                            } else { // 중복 ID가 존재하지 않는 경우
+                                Toast.makeText(getApplicationContext(),"사용할 수 있는 아이디 입니다.",Toast.LENGTH_SHORT).show(); //회원가입 실패 알림
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                };
+                String userID = edit_id.getText().toString();
+
+                ValidateRequest validateRequest = new ValidateRequest(userID, responseListener);
+                RequestQueue queue = Volley.newRequestQueue(SignupActivity.this);
+                queue.add(validateRequest);
+
+
+            }
+        });
 
         signup_button.setOnClickListener(new View.OnClickListener() {
             @Override
