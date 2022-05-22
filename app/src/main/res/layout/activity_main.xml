@@ -34,12 +34,12 @@
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="34dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="80dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/main_meterLeft"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/main_guideline3">
+        app:layout_constraintStart_toStartOf="@+id/main_guideline3"
+        app:layout_constraintTop_toTopOf="@+id/main_container">
 
         <TextView
             android:id="@+id/main_text1"
@@ -73,42 +73,29 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/main_meterLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:text="가장 가까운 쓰레기통까지 약 0m"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/main_stepCnt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/main_guideline3" />
-
-    <TextView
         android:id="@+id/main_stepCnt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
+        android:layout_marginTop="16dp"
         android:text="누적 걸음수 800보"
         android:textColor="#000000"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/main_arriveButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/main_guideline3" />
+        app:layout_constraintStart_toStartOf="@+id/main_guideline3"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <ImageButton
         android:id="@+id/main_arriveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginTop="32dp"
         android:background="#FFFFFF"
         android:contentDescription="arrival_check"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.78"
+        app:layout_constraintHorizontal_bias="0.814"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_stepCnt"
         app:srcCompat="@drawable/main_button_2"
         tools:ignore="TouchTargetSizeCheck" />
 
