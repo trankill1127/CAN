@@ -34,12 +34,13 @@
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="34dp"
-        android:layout_marginBottom="12dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/main_meterLeft"
+        app:layout_constraintBottom_toTopOf="@+id/main_stepCnt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/main_guideline3">
+        app:layout_constraintStart_toStartOf="@+id/main_guideline3"
+        app:layout_constraintTop_toTopOf="@+id/main_container"
+        app:layout_constraintVertical_bias="0.97">
 
         <TextView
             android:id="@+id/main_text1"
@@ -73,23 +74,10 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/main_meterLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:text="잠시 기다려주세용"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/main_stepCnt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/main_guideline3" />
-
-    <TextView
         android:id="@+id/main_stepCnt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="35dp"
         android:text="누적 걸음수 800보"
         android:textColor="#000000"
         android:textSize="18sp"
@@ -102,12 +90,12 @@
         android:id="@+id/main_arriveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="68dp"
         android:background="#FFFFFF"
         android:contentDescription="arrival_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.78"
+        app:layout_constraintHorizontal_bias="0.781"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/main_button_2"
         tools:ignore="TouchTargetSizeCheck" />
@@ -137,7 +125,7 @@
         android:id="@+id/main_arriveButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="68dp"
         android:background="#00000000"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

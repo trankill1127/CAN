@@ -224,24 +224,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
-        location=findViewById(R.id.main_meterLeft);
+        //location=findViewById(R.id.main_meterLeft);
         //location.setText("hi");
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
         currentLatitude = mapPointGeo.latitude;
         currentLongitude = mapPointGeo.longitude;
 
-
-
-        Log.i("--------------------", "current "+currentLatitude+" "+currentLongitude);
-
         if (startingApp==true){
             startLatitude = currentLatitude;
             startLongitude = currentLongitude;
             startingApp=false;
-
-            Log.i("--------------------", "start  "+startLatitude+" "+startLongitude);
-            Log.i("----------------", "request "+startLatitude+" "+startLongitude);
 
             TrashCanRequest trashCanRequest = new TrashCanRequest(startLatitude, startLongitude, c_responseListener);
             RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
@@ -250,8 +243,8 @@ public class MainActivity extends AppCompatActivity
 
         if(flag==1){//가장 가까운 쓰레기통 찾았을 때
         distance=Math.sqrt((latitude-currentLatitude)*(latitude-currentLatitude)+(longitude-currentLongitude)*(longitude-currentLongitude));
-        Log.i("--distance---------", distance+"");
-        location.setText(String.format("%f %f \n %f %f \n%f %d", latitude,longitude,currentLatitude,currentLongitude,distance,flag));
+        //Log.i("--distance---------", distance+"");
+        //location.setText(String.format("%f %f \n %f %f \n%f %d", latitude,longitude,currentLatitude,currentLongitude,distance,flag));
        // distance=0.0004;
         if(distance<0.0005) {
             arrive_button.setVisibility(View.INVISIBLE);
