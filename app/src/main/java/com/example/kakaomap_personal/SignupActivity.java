@@ -71,15 +71,11 @@ public class SignupActivity extends AppCompatActivity {
                             boolean success = jsonObject.getBoolean("success");
 
                             if (success) { // 회원등록에 성공한 경우
-
                                 Toast.makeText(getApplicationContext(),"회원 가입에 성공했습니다.",Toast.LENGTH_SHORT).show(); //회원 가입성공 알림림
 
                                 //로그인 페이지로 이동
                                 Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
                                 startActivity(intent);
-
-                            } else { // 회원등록에 실패한 경우
-                                Toast.makeText(getApplicationContext(),"회원 등록에 실패했습니다.",Toast.LENGTH_SHORT).show(); //회원가입 실패 알림
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
