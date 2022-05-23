@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android_Project/Oh/CAN/app/src/main/res/layout/activity_login.xml" value="0.25364583333333335" />
+        <entry key="..\:/Android_Project/Oh/CAN/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
+        <entry key="..\:/Android_Project/Oh/CAN/app/src/main/res/layout/activity_management.xml" value="0.25364583333333335" />
+        <entry key="..\:/Android_Project/Oh/CAN/app/src/main/res/layout/user.xml" value="0.264" />
         <entry key="..\:/Android_studio/0520_2/CAN/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Android_studio/0520_2/CAN/app/src/main/res/layout/activity_ranking.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/drawable/rectangle_1.xml" value="0.137" />
