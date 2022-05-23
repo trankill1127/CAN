@@ -12,10 +12,13 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.util.Log;
 import android.view.View;
@@ -40,7 +43,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener/*, SensorEventListener*/ {
+        implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener, SensorEventListener {
 
     //xml
     private MapView mMapView;
@@ -74,7 +77,6 @@ public class MainActivity extends AppCompatActivity
     private int now_rank;
 
     private int flag=0;
-    private TextView location;
     public double distance=10.0;
 
     public ImageButton arrive_button; //05-21 sy onCurrentLocationUpdate에서도 사용하기 위해 전역변수 선언
@@ -83,46 +85,44 @@ public class MainActivity extends AppCompatActivity
 
     Response.Listener<String> c_responseListener;
 
-    /*
     SensorManager sensorManager;
     Sensor stepCountSensor;
     TextView stepCountView;
 
     int currentSteps = 0;
      @RequiresApi(api = Build.VERSION_CODES.Q)
-     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         arrive_button = findViewById(R.id.main_arriveButton);
         arrive_button2 = findViewById(R.id.main_arriveButton2);
+        stepCountView = findViewById(R.id.textView);
+
         initView(); //화면 초기화
-        //stepCountView = findViewById(R.id.stepCountView);
-        /*
-                if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
 
-            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
-        }
+         //활동 퍼미션 체크
+         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
+             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
+         }
 
-        // 걸음 센서 연결
-        // * 옵션
-        // - TYPE_STEP_DETECTOR:  리턴 값이 무조건 1, 앱이 종료되면 다시 0부터 시작
-        // - TYPE_STEP_COUNTER : 앱 종료와 관계없이 계속 기존의 값을 가지고 있다가 1씩 증가한 값을 리턴
-        //
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+         // 걸음 센서 연결
+         // * 옵션
+         // - TYPE_STEP_DETECTOR:  리턴 값이 무조건 1, 앱이 종료되면 다시 0부터 시작
+         // - TYPE_STEP_COUNTER : 앱 종료와 관계없이 계속 기존의 값을 가지고 있다가 1씩 증가한 값을 리턴
+         //
+         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+         stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
-        // 디바이스에 걸음 센서의 존재 여부 체크
-        if (stepCountSensor == null) {
-            Toast.makeText(this, "No Step Sensor", Toast.LENGTH_SHORT).show();
-        }
+         // 디바이스에 걸음 센서의 존재 여부 체크
+         if (stepCountSensor == null) {
+             Toast.makeText(this, "No Step Sensor", Toast.LENGTH_SHORT).show();
+         }
 
-         */
 
     }
-    /*
+
     public void onStart() {
         super.onStart();
         if(stepCountSensor !=null) {
@@ -132,16 +132,14 @@ public class MainActivity extends AppCompatActivity
             // - SENSOR_DELAY_UI: 6,000 초 딜레이
             // - SENSOR_DELAY_GAME: 20,000 초 딜레이
             // - SENSOR_DELAY_FASTEST: 딜레이 없음
-            //
             sensorManager.registerListener(this,stepCountSensor,SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
-     */
-    /*
         @Override
     public void onSensorChanged(SensorEvent event) {
+         Log.i("----","발생");
         // 걸음 센서 이벤트 발생시
-        if(event.sensor.getType() == Sensor.TYPE_STEP_COUNTER){
+        if(event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR){
 
             if(event.values[0]==1.0f){
                 // 센서 이벤트가 발생할때 마다 걸음수 증가
@@ -153,15 +151,15 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-     */
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initView() {
 
-        //맵 바인딩
+        //맵 바인.딩
         mMapView = new MapView(this);
         mMapViewContainer = findViewById(R.id.map_view);
         mMapViewContainer.addView(mMapView);
@@ -188,7 +186,6 @@ public class MainActivity extends AppCompatActivity
         layout_userName = findViewById(R.id.main_userName);
         layout_userName.setText(userName);
 
-
         c_responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -210,23 +207,20 @@ public class MainActivity extends AppCompatActivity
                     canMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); //마커 모습(클릭)
                     mMapView.addPOIItem(canMarker); //지도 위에 마커 표시
 
-                    flag=1;
-                    //distance=Math.sqrt((latitude-currentLatitude)*(latitude-currentLatitude)+(longitude-currentLongitude)*(longitude-currentLongitude));
-
+                    flag=1; //가장 가까운 쓰레기통 찾았을 때 distance구하기 위해 flag 설정
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-               // flag=1; //05-21 sy 가장 가까운 쓰레기통을 찾은 뒤 거리 계산을 해야하므로 flag설정(0에서 1로 변경)
             }
 
         };
+
+
     }
 
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
-        //location=findViewById(R.id.main_meterLeft);
-        //location.setText("hi");
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
         currentLatitude = mapPointGeo.latitude;
@@ -244,17 +238,16 @@ public class MainActivity extends AppCompatActivity
 
         if(flag==1){//가장 가까운 쓰레기통 찾았을 때
         distance=Math.sqrt((latitude-currentLatitude)*(latitude-currentLatitude)+(longitude-currentLongitude)*(longitude-currentLongitude));
-        //Log.i("--distance---------", distance+"");
-        //location.setText(String.format("%f %f \n %f %f \n%f %d", latitude,longitude,currentLatitude,currentLongitude,distance,flag));
-       // distance=0.0004;
-        if(distance<10) {
-            arrive_button.setVisibility(View.INVISIBLE);
-            arrive_button2.setVisibility(View.VISIBLE);
+
+        //쓰레기통에 가까워졌을 때
+        if(distance<0.0004) {
+            arrive_button.setVisibility(View.INVISIBLE);//회색 버튼 안보이게
+            arrive_button2.setVisibility(View.VISIBLE);//초록색 버튼 보이게
             arrive_button2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    now_step_count = 10; //임의로 걸음수 설정
+                    now_step_count = currentSteps; //현재 걸음수 업데이트
 
                     //데베 업뎃을 위해 회원정보 업뎃
                     step_count = step_count + now_step_count;
@@ -382,16 +375,5 @@ public class MainActivity extends AppCompatActivity
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
 
     }
-/*
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
 
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
-    }
-
- */
 }
