@@ -23,7 +23,7 @@
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="abb6d059bacca3ecc6d269520e3271f4" />
+            android:value="6b275ec303646674b725f9e9b859b7b2" />
 
         <activity
             android:name=".SignupActivity"

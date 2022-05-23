@@ -285,6 +285,7 @@ public class MainActivity extends AppCompatActivity
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
                         }
                     };
                     UpdateRequest updateRequest = new UpdateRequest(userID, step_count, trash_count, total, responseListener);
