@@ -77,8 +77,8 @@
         android:id="@+id/main_stepCnt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="35dp"
-        android:text="누적 걸음수 800보"
+        android:layout_marginBottom="16dp"
+        android:text="누적 걸음 수:"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/main_arriveButton"
@@ -133,5 +133,18 @@
         app:layout_constraintHorizontal_bias="0.781"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/main_button_1" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="#090909"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/main_arriveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/main_stepCnt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
