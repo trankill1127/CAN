@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     private int trash_count;
     private int total;
     private int best_rank;
+    private int now_rank;
 
     private int flag=0;
     private TextView location;
@@ -246,7 +247,7 @@ public class MainActivity extends AppCompatActivity
         //Log.i("--distance---------", distance+"");
         //location.setText(String.format("%f %f \n %f %f \n%f %d", latitude,longitude,currentLatitude,currentLongitude,distance,flag));
        // distance=0.0004;
-        if(distance<0.0005) {
+        if(distance<10) {
             arrive_button.setVisibility(View.INVISIBLE);
             arrive_button2.setVisibility(View.VISIBLE);
             arrive_button2.setOnClickListener(new View.OnClickListener() {
@@ -266,28 +267,28 @@ public class MainActivity extends AppCompatActivity
                         public void onResponse(String response) {
 
                             try {
+                                Log.i("------------", "Updateresponse"+response);
+
                                 JSONObject jsonObject = new JSONObject(response);
 
-                                boolean success = jsonObject.getBoolean("success");
+                                best_rank = Integer.parseInt(jsonObject.getString("best_rank"));
+                                now_rank = Integer.parseInt(jsonObject.getString("now_rank"));
 
-                                if (success) { // 데베 업뎃을 성공한 경우
-                                    intent = new Intent(MainActivity.this, RankingActivity.class);
+                                intent = new Intent(MainActivity.this, RankingActivity.class);
 
-                                    //RankingActivity에 회원정보 전달
-                                    intent.putExtra("userID", userID);
-                                    intent.putExtra("userPassword", userPassword);
-                                    intent.putExtra("userName", userName);
-                                    intent.putExtra("step_count", step_count);
-                                    intent.putExtra("trash_count", trash_count);
-                                    intent.putExtra("total", total);
-                                    intent.putExtra("best_rank", best_rank);
-                                    intent.putExtra("now_step_count", now_step_count);
+                                //RankingActivity에 회원정보 전달
+                                intent.putExtra("userID", userID);
+                                intent.putExtra("userPassword", userPassword);
+                                intent.putExtra("userName", userName);
+                                intent.putExtra("step_count", step_count);
+                                intent.putExtra("trash_count", trash_count);
+                                intent.putExtra("total", total);
+                                intent.putExtra("best_rank", best_rank);
+                                intent.putExtra("now_rank", now_rank);
+                                intent.putExtra("now_step_count", now_step_count);
 
-                                    startActivity(intent);
+                                startActivity(intent);
 
-                                } else { // 데베 업뎃에 실패한 경우
-                                    Toast.makeText(getApplicationContext(), "데이터베이스 업데이트에 실패했습니다.", Toast.LENGTH_SHORT).show(); //데베 업뎃 실패 알림
-                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

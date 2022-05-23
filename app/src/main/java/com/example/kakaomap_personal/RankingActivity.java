@@ -29,10 +29,12 @@ public class RankingActivity extends AppCompatActivity {
     private int step_count;
     private int trash_count;
     private int total;
+    private int now_rank;
     private int best_rank;
     private int now_step_count;
 
     private TextView layout_userName;
+    private TextView layout_nowRank;
     private TextView layout_bestRank;
     private TextView layout_trashCnt;
     private TextView layout_stepCnt;
@@ -69,11 +71,15 @@ public class RankingActivity extends AppCompatActivity {
         step_count = intent.getIntExtra("step_count", 0);
         trash_count = intent.getIntExtra("trash_count", 0);
         total = intent.getIntExtra("total", 0);
+        now_rank = intent.getIntExtra("now_rank", 0);
         best_rank = intent.getIntExtra("best_rank", 0);
         now_step_count = intent.getIntExtra("now_step_count", 0);
 
         layout_userName = findViewById(R.id.ranking_userName);
         layout_userName.setText(userName);
+
+        layout_nowRank = findViewById(R.id.ranking_nowRank);
+        layout_nowRank.setText(now_rank+"위");
 
         layout_bestRank = findViewById(R.id.ranking_bestRank);
         layout_bestRank.setText(best_rank+"위");
