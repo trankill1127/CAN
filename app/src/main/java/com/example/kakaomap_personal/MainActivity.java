@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity
         distance=Math.sqrt((latitude-currentLatitude)*(latitude-currentLatitude)+(longitude-currentLongitude)*(longitude-currentLongitude));
 
         //쓰레기통에 가까워졌을 때
-        if(distance<10) {
+        if(distance<0.0004) {
             arrive_button.setVisibility(View.INVISIBLE);//회색 버튼 안보이게
             arrive_button2.setVisibility(View.VISIBLE);//초록색 버튼 보이게
             arrive_button2.setOnClickListener(new View.OnClickListener() {
