@@ -3,12 +3,6 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Android_Project/CCAANN/CAN/app/src/main/res/layout/activity_login.xml" value="0.25364583333333335" />
-        <entry key="..\:/Android_Project/CCAANN/CAN/app/src/main/res/layout/activity_management.xml" value="0.25364583333333335" />
-        <entry key="..\:/Android_Project/CCAANN/CAN/app/src/main/res/layout/activity_ranking.xml" value="0.1" />
-        <entry key="..\:/Android_Project/CCAANN/CAN/app/src/main/res/layout/activity_signup.xml" value="0.4" />
-        <entry key="..\:/Android_Project/CCAANN/CAN/app/src/main/res/layout/activity_title.xml" value="0.25364583333333335" />
-        <entry key="..\:/Android_Project/CCAANN/CAN/app/src/main/res/layout/user.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/drawable/rectangle_1.xml" value="0.137" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/drawable/rectangle_2.xml" value="0.137" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/drawable/rectangle_3.xml" value="0.137" />
@@ -18,7 +12,7 @@
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/layout/activity_management.xml" value="0.1" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/layout/activity_ranking.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/layout/activity_signin.xml" value="0.24635416666666668" />
-        <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/layout/activity_signup.xml" value="0.1" />
+        <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/layout/activity_signup.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/layout/activity_title.xml" value="0.22" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/layout/title_activity.xml" value="0.22" />
         <entry key="..\:/Users/LG/AndroidStudioProjects/KakaoMap_personal/app/src/main/res/layout/user.xml" value="0.1" />
